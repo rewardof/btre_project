@@ -1,12 +1,25 @@
+from django.core.paginator import Paginator
 from django.shortcuts import render
 from django.http import HttpResponse
+from .models import Listing
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 def index(request):
-    return render(request, 'listings/listings.html')
+    listings = Listing.objects.all()
+
+    paginator = Paginator(listings, 3)
+    page = request.GET.get('page')
+    print(page)
+    paged_listings = paginator.get_page(page)
+    print(paged_listings)
+    context = {
+        'listings': paged_listings
+    }
+    return render(request, 'listings/listings.html', context)
 
 
-def listing(request):
+def listing(request, listing_id):
     return render(request, 'listings/listing.html')
 
 
